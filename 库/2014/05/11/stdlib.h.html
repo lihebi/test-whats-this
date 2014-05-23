@@ -1,0 +1,363 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Stdlib.h </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Stdlib.h</h1>
+<span class="meta">11 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h2 id="toc_0">stdlib.h</h2>
+
+<p>malloc</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// Allocates a block of size bytes of memory. Not initialized.
+void *malloc(size_t size);
+</code></pre></div>
+<p>free</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">void free(void *ptr);
+</code></pre></div>
+<!--more-->
+
+<p>calloc</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 为一个num个元素的数组分配内存。每一个有size字节，初始化为0。
+void *calloc(size_t num, size_t size)
+</code></pre></div>
+<p>realloc</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// 将ptr指向的block的大小改为size。
+// 可能会将这个block移动到一个新的地址。
+// block的内容会保留新的大小和旧的大小中较小者。
+// 如果新的大小更大，那么多出来的是未定义的。
+// 如果ptr==NULL，等价于malloc
+void *realloc(void *ptr, size_t size);
+</code></pre></div>
+<p>atoi</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">int atoi(const char *str);
+</code></pre></div>
+<p>atof</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">double atof(const char *str);
+</code></pre></div>
+<p>atol</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">long int atol(const char *str);
+</code></pre></div>
+<p>strtol</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// base是进制
+long int strtol(const char *str, char **endptr, int base)
+</code></pre></div>
+<p>Example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">char str[] = &quot;2001 60cf2d -1100110010 0x6fff&quot;;
+long int a,b,c,d;
+char *sp;
+a = strtol(str, &amp;sp, 10);
+b = strtol(sp, &amp;sp, 16);
+c = strtol(sp, &amp;sp, 2);
+d = strtol(sp, NULL, 0);
+</code></pre></div>
+<p>strtoul</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">unsigned long int strtoul(const char *str, char **endptr, int base);
+</code></pre></div>
+<p>strtod</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">double strtod(const char *str, char **endptr);
+</code></pre></div>
+<p>printf</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// Format: %[flags][width][.precision][length]specifier
+
+/**
+ * specifier
+ * d/i 有符号十进制整数
+ * u 无符号十进制整数
+ * o 无符号八进制
+ * x 无符号十六进制整数
+ * X 同上，但是X大写
+ * f/F 浮点数 小写/大写
+ * e/E 科学计数法 小写/大写
+ * g/G use the shortest representation: (%e or %f / %E or %F)
+ * p pointer address
+ */
+
+/**
+ * Flags
+ * - 左对齐
+ * + 强制显示+-号
+ * (space) 如果没有符号位可写，加空格
+ * # (oxX)会打出(0,0x,0X), (aef)会打出小数点
+ */
+
+/**
+ * width
+ * (number) number较大将显示的位数补空格。number小则无影响
+ * * 在...中给出
+ */
+
+/**
+ * .precision
+ * (number) (ef)保留位数。s打印个数
+ * (.*) ...中给出
+ */
+
+/**
+ * length
+ * l long
+ * h short
+ * U long long
+ * z size_t
+ */
+
+int printf(const char *format, ...);
+</code></pre></div>
+<h2 id="toc_1">sys/time.h</h2>
+
+<p>gettimeofday</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// tzp = NULL
+// 返回从1970.1.1 00:00 UTC 到现在的秒数
+int gettimeofday(struct timeval *tp, void *tzp);
+struct timeval {
+  __time_t tv_sec;
+  __suseconds_t tv_usec;
+}
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

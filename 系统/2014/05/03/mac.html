@@ -1,0 +1,352 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Mac </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Mac</h1>
+<span class="meta">03 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+  <a class="btn btn-success" href="/tags.html?mac"> mac </a>
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h1 id="toc_0">终端</h1>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">alias google-chrome=&#39;open -a Google\ Chrome&#39;
+</code></pre></div>
+<p>让spotlight重新建立索引：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">sudo mdutil -e / # 建立整个硬盘
+sudo mdutil -e /Volumn/MyVolumn ＃ 针对单个volumn，应该可以对任意一个文件夹
+</code></pre></div>
+<!--more-->
+
+<h1 id="toc_1">软件</h1>
+
+<h2 id="toc_2">font-book</h2>
+
+<p>有很多字体可以预览，通过它还可以装字体。</p>
+
+<h2 id="toc_3">DigitalColor Meter</h2>
+
+<p>屏幕取色。如果CSS要使用rgba，则选择sRGB的值。</p>
+
+<h2 id="toc_4">iterm</h2>
+
+<p>快捷键</p>
+
+<p><code>cmd+enter</code> full screen</p>
+
+<p><code>cmd+/</code> cursor</p>
+
+<p><code>option+cmd+b</code>: 回放</p>
+
+<p><code>shift+cmd+d</code>横向分割</p>
+
+<p><code>md+d</code> 纵向</p>
+
+<h2 id="toc_5">zsh</h2>
+
+<p>虽然不是mac的专利，但是我认识它是在这。使用它的原因是有oh-my-zsh。一定要结合autojump使用。
+确实一个人必须经历过足够的麻烦才会意识到简洁的珍贵。
+这和使用一门语言，最好先自己去实现所要的功能，才能体会到别人维护很多年的库的来之不易。
+且行且珍惜。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cat /etc/shells
+chsh -s /bin/zsh
+</code></pre></div>
+<h3 id="toc_6">Install oh-my-zsh</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+</code></pre></div>
+<h3 id="toc_7">Autojump</h3>
+
+<p>Install</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">brew install autojump
+</code></pre></div>
+<p>in <code>.zshrc</code></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">plugins = (..., autojump)
+</code></pre></div>
+<p>autojump支持的功能：</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">j xxx # 进入目录。会自动学习你进过的目录，并且只要输个大概就可以了。
+
+.. &amp; ... &amp; / &amp; ~ &amp; - # 不用cd了
+
+ls -l **/*.sh
+</code></pre></div>
+<h2 id="toc_8">homebrew</h2>
+
+<p>在github上大概前十的。装软件不用sudo。</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">brew install xxx
+brew uninstall xxx
+brew search xxx
+brew --prefix
+</code></pre></div>
+<p>homebrew install in <code>/usr/local/Celler/…</code>
+it create symbol links in <code>/usr/local/bin/…</code></p>
+
+<h2 id="toc_9">KeyRemap4MacBook &amp;&amp; PCKeyboardHack</h2>
+
+<p>System Preference ==&gt; Keyboard ==&gt; modifier ==&gt; Caps Lock无操作。
+再用PCKeyboardHack改掉</p>
+
+<h2 id="toc_10">Alfred</h2>
+
+<p>Workflow -&gt; script filter -&gt; bash</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cat&lt;&lt;EOF
+&lt;items&gt;
+
+&lt;item&gt;
+&lt;title&gt;Chrome书签&lt;/title&gt;
+&lt;icon&gt;icon.png&lt;/icon&gt;
+&lt;/item&gt;
+
+&lt;item&gt;
+xxx
+&lt;/item&gt;
+
+&lt;/items&gt;
+EOF
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

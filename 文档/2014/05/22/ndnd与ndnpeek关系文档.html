@@ -1,0 +1,527 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> ndnd与ndnpeek关系文档 </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>ndnd与ndnpeek关系文档</h1>
+<span class="meta">22 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h1 id="toc_0">ndnd执行流程</h1>
+
+<h3 id="toc_1">ndnd_main.c</h3>
+
+<p>主函数代码如下</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">int
+main(int argc, char **argv)
+{
+    struct ndnd_handle *h;
+
+    if (argc &gt; 1) {
+        fprintf(stderr, &quot;%s&quot;, ndnd_usage_message);
+        exit(1);
+    }
+    signal(SIGPIPE, SIG_IGN);
+    h = ndnd_create(argv[0], stdiologger, stderr);
+    if (h == NULL)
+        exit(1);
+    ndnd_run(h);
+    ndnd_msg(h, &quot;exiting.&quot;);
+    ndnd_destroy(&amp;h);
+    ERR_remove_state(0);
+    EVP_cleanup();
+    exit(0);
+}
+</code></pre></div>
+<!--more-->
+
+<p>使用ndnd_create创建了一个ndnd_handle.
+运行ndnd_run.</p>
+
+<h3 id="toc_2">ndnd_run()</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for (h-&gt;running = 1; h-&gt;running;) {
+
+  process_internal_client_buffer(h);
+  usec = ndn_schedule_run(h-&gt;sched);
+  timeout_ms = (usec &lt; 0) ? -1 : ((usec + 960) / 1000);
+  if (timeout_ms == 0 &amp;&amp; prev_timeout_ms == 0)
+  timeout_ms = 1;
+  process_internal_client_buffer(h);
+
+  prepare_poll_fds(h);
+  res = poll(h-&gt;fds, h-&gt;nfds, timeout_ms);
+  for (i = 0; res &gt; 0 &amp;&amp; i &lt; h-&gt;nfds; i++) {
+    if (h-&gt;fds[i].revents != 0) {
+      res--;
+      // 可写
+      if (h-&gt;fds[i].revents &amp; (POLLOUT))
+        do_deferred_write(h, h-&gt;fds[i].fd);
+      // 可读
+      else if (h-&gt;fds[i].revents &amp; (POLLIN))
+        process_input(h, h-&gt;fds[i].fd);
+    }
+  }
+}
+</code></pre></div>
+<p>分为两部分</p>
+
+<ul>
+<li>process_internal</li>
+<li><code>poll</code>遍历准备好的IO</li>
+</ul>
+
+<p>内部的client连接本地<code>socket</code>后,发送的<code>interest</code>和接收<code>data</code>都是走<code>poll</code>这条路.</p>
+
+<p><code>process_internal</code>应该是为了<code>ndndc</code>等路由控制命令准备的.</p>
+
+<p>所以,内部和外部client没有本质的区别,直接往远程<code>IP:PORT</code>发包就行.</p>
+
+<h1 id="toc_3">mypeek 代码</h1>
+
+<p><code>mypeek</code>是简版的<code>ndnpeek</code>,为了达到完全脱离ndnd进行编译执行,我把相关文件集中到一个目录下.</p>
+
+<h3 id="toc_4">目录结构.</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mypeek
+├── Makefile
+├── hashtb.c
+├── mypeek.c
+├── ndn_bloom.c
+├── ndn_buf_decoder.c
+├── ndn_buf_encoder.c
+├── ndn_charbuf.c
+├── ndn_client.c
+├── ndn_coding.c
+├── ndn_digest.c
+├── ndn_indexbuf.c
+├── ndn_interest.c
+├── ndn_keystore.c
+├── ndn_match.c
+├── ndn_name_util.c
+├── ndn_reg_mgmt.c
+├── ndn_schedule.c
+├── ndn_setup_sockaddr_un.c
+├── ndn_signing.c
+├── ndn_sockaddrutil.c
+├── ndn_uri.c
+└── ndn_versioning.c
+</code></pre></div>
+<h3 id="toc_5">makefile</h3>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">CC=gcc
+CFLAGS=-Wall
+LDFLAGS=-lcrypto
+
+EXECUTABLE=mypeek
+OBJ = mypeek.o hashtb.o ndn_bloom.o ndn_buf_decoder.o ndn_buf_encoder.o ndn_charbuf.o ndn_client.o ndn_coding.o ndn_digest.o\
+    ndn_indexbuf.o ndn_interest.o ndn_keystore.o ndn_match.o ndn_name_util.o ndn_reg_mgmt.o\
+    ndn_schedule.o ndn_setup_sockaddr_un.o ndn_signing.o ndn_sockaddrutil.o ndn_uri.o ndn_versioning.o
+
+%.o: %.c
+    $(CC) -c -o $@ $&lt; $(CFLAGS)
+
+$(EXECUTABLE): $(OBJ)
+    $(CC) -o $(EXECUTABLE) $(OBJ) $(CFLAGS) $(LDFLAGS)
+
+clean:
+    rm -rf $(OBJ) $(EXECUTABLE)
+</code></pre></div>
+<p>在ubuntu下编译时,可能会出错,说要使用c99.但有的文件使用c99又不行.</p>
+
+<p>解决办法:
+使用此文件make一下,再修改一行后make:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">CFLAGS=-std=c99 -lcrypto
+</code></pre></div>
+<h3 id="toc_6">mypeek.c</h3>
+
+<p>ndn_connect时第二个参数写<code>&quot;tcp&quot;</code>.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">int main(int argc, char** argv) {
+  // 变量定义
+  int res;
+  struct ndn *h = NULL;
+  struct ndn_charbuf *name = NULL;
+  struct ndn_charbuf *resultbuf = NULL;
+  struct ndn_charbuf *templ = NULL;
+  int timeout_ms = 3000;
+  struct ndn_parsed_ContentObject pcobuf = { 0 };
+  int get_flags = 0;
+  const unsigned char *ptr;
+  size_t length;
+
+
+  // 从传入的第一个参数&quot;/xxx/xxx&quot;转换为ndn名字
+  name = ndn_charbuf_create();
+  ndn_name_from_uri(name, argv[1]);
+  // 创建ndn实体,并连接远程socket
+  h = ndn_create();
+  res = ndn_connect(h, &quot;tcp&quot;); // 这里要使用tcp
+  // 构造name对应的Interest,并取得内容放到resultbuf里
+  resultbuf = ndn_charbuf_create();
+  res = ndn_get(h, name, templ, timeout_ms, resultbuf, &amp;pcobuf, NULL, get_flags);
+  ptr = resultbuf-&gt;buf;
+  length = resultbuf-&gt;length;
+  // 从buf中获得内容
+  ndn_content_get_value(ptr, length, &amp;pcobuf, &amp;ptr, &amp;length);
+  fwrite(ptr, length, 1, stdout) - 1;
+}
+</code></pre></div>
+<p>运行方式</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mypeek /test
+</code></pre></div>
+<h3 id="toc_7">ndn_setup_sockaddr_in</h3>
+
+<p>这个函数写死了,<code>getaddrinfo</code>函数的<code>hostname</code>参数直接设成<code>null</code>,所以只连接了本地<code>ndnd</code>.
+同时也不提供输入参数来自定义.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">int
+ndn_setup_sockaddr_in(const char *name, struct sockaddr *result, int length)
+{
+    struct addrinfo hints = {0};
+    struct addrinfo *ai = NULL;
+    char *port;
+    char *nameonly = strdup(name);
+    int ans = -1;
+    int res;
+
+    port = strchr(nameonly, &#39;:&#39;);
+    if (port)
+        *port++ = 0;
+    if (port == NULL || port[0] == 0)
+        port = getenv(NDN_LOCAL_PORT_ENVNAME);
+    if (port == NULL || port[0] == 0)
+        port = NDN_DEFAULT_UNICAST_PORT;
+    memset(result, 0, length);
+    hints.ai_family = AF_UNSPEC;
+    if (strcasecmp(nameonly, &quot;tcp6&quot;) == 0) hints.ai_family = AF_INET6;
+    if (strcasecmp(nameonly, &quot;tcp4&quot;) == 0) hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_ADDRCONFIG;
+    hints.ai_protocol = 0;
+    // 这一行需要修改
+    res = getaddrinfo(NULL, port, &amp;hints, &amp;ai);
+    if (res != 0 || ai-&gt;ai_addrlen &gt; length)
+        goto Bail;
+    memcpy(result, ai-&gt;ai_addr, ai-&gt;ai_addrlen);
+    ans = 0;
+Bail:
+    free(nameonly);
+    freeaddrinfo(ai);
+    return (ans);
+}
+</code></pre></div>
+<p>直接修改<code>getaddrinfo</code>行为</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">res = getaddrinfo(&quot;192.168.16.8&quot;, port, &amp;hints, &amp;ai);
+</code></pre></div>
+<p>其中IP地址是运行ndnd的主机.</p>
+
+<h1 id="toc_8">客户端分析</h1>
+
+<h3 id="toc_9">ndn_get</h3>
+
+<ul>
+<li>发送interest</li>
+<li>运行主循环,等待data</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">res = ndn_express_interest(h, name, &amp;md-&gt;closure, interest_template);
+res = ndn_run(h, timeout_ms);
+</code></pre></div>
+<h3 id="toc_10">ndn_express_interest</h3>
+
+<ul>
+<li>构造interest</li>
+<li>换掉h的handle为传进来的函数指针</li>
+<li>实际发送interest</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ndn_construct_interest(h, namebuf, interest_template, interest);
+ndn_replace_handler(h, &amp;(interest-&gt;action), action);
+ndn_refresh_interest(h, interest);
+</code></pre></div>
+<h3 id="toc_11">ndn_refresh_interest</h3>
+
+<p>把<code>msg</code>打到已经建立的socket<code>h-&gt;sock</code>上</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">res = ndn_put(h, interest-&gt;interest_msg, interest-&gt;size);
+</code></pre></div>
+<h3 id="toc_12">ndn_run</h3>
+
+<p>对已经建立的socket<code>h-&gt;sock</code>做轮询</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">for(;;) {
+  fds[0].fd = h-&gt;sock;
+  fds[0].events = POLLIN;
+  res = poll(fds, 1, millisec);
+  if ((fds[0].revents | POLLOUT) != 0)
+    ndn_pushout(h);
+  if ((fds[0].revents | POLLIN) != 0)
+    ndn_process_input(h);
+}
+</code></pre></div>
+<h3 id="toc_13">ndn_pushout</h3>
+
+<p>往<code>h-&gt;sock</code>上写</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">res = write(h-&gt;sock, h-&gt;outbuf-&gt;buf + h-&gt;outbufindex, size);
+</code></pre></div>
+<h3 id="toc_14">ndn_process_input</h3>
+
+<ul>
+<li>读<code>h-&gt;sock</code>数据,并解码,输出</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">res = read(h-&gt;sock, buf, inbuf-&gt;limit - inbuf-&gt;length);
+ndn_skeleton_decode(d, buf, res);
+while (d-&gt;state == 0) {
+  ndn_dispatch_message(h, inbuf-&gt;buf + msgstart, d-&gt;index - msgstart);
+  msgstart = d-&gt;index;
+  if (msgstart == inbuf-&gt;length) {
+    inbuf-&gt;length = 0;
+    return(0);
+  }
+  ndn_skeleton_decode(d, inbuf-&gt;buf + d-&gt;index, inbuf-&gt;length - d-&gt;index);
+}
+if (msgstart &lt; inbuf-&gt;length &amp;&amp; msgstart &gt; 0) {
+  memmove(inbuf-&gt;buf, inbuf-&gt;buf + msgstart,
+    inbuf-&gt;length - msgstart);
+    inbuf-&gt;length -= msgstart;
+    d-&gt;index -= msgstart;
+}
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

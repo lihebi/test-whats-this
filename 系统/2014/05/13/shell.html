@@ -1,0 +1,470 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Shell </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Shell</h1>
+<span class="meta">13 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h2 id="toc_0">未分类</h2>
+
+<p>echo</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo -e &quot;\n\thello\tworld\n&quot; # 可以使用\n等控制字符
+</code></pre></div>
+<p>pv</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo &#39;xxx&#39; | pv -ql 20
+</code></pre></div>
+<p>column</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">mount | column -t # 格式化显示挂载信息
+</code></pre></div>
+<!--more-->
+
+<p>mount</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># TODO
+</code></pre></div>
+<p>xargs</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># 相当于``，并把输出放结尾
+find /etc -name &#39;*.conf&#39; | xargs ls -l
+# 等价于
+ls -l `find ...`
+</code></pre></div>
+<p>export &amp; source</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># source 只在本shell可用
+# export 声明为全局变量。只有全局变量可以被子shell继承
+</code></pre></div>
+<p>重定向</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">foo &gt; outfile 2&gt;&amp;1 # stderr输出到stdout，stdout输出到outfile
+foo 2&gt; err.txt # stderr输出到err.txt
+</code></pre></div>
+<p>grep</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># -i: 忽略大小写
+# -n: 显示行号
+# -v: 输出不匹配的行
+# -H: 同时输出此行所在的文件名
+grep &lt;pattern&gt; &lt;file&gt;
+</code></pre></div>
+<p>whereis &amp; which</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">whereis &lt;command&gt; # 找到一条命令的二进制、源、手册所在路径
+which &lt;command&gt; # 在PATH中找
+</code></pre></div>
+<p>dd</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dd if=xxx.iso of=/dev/sdb bs=4m; sync
+</code></pre></div>
+<p>man</p>
+
+<ol>
+<li>普通用户可执行的命令</li>
+<li>系统调用手册，内核函数说明</li>
+<li>子程序手册，库函数说明</li>
+<li>系统设备手册，<code>/dev</code>目录中设备文件的参考说明</li>
+<li>配置文件格式手册</li>
+<li>游戏说明手册</li>
+<li>协议转换手册</li>
+<li>系统管理工具手册</li>
+<li>linux系统例程手册</li>
+</ol>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">man 2 write
+</code></pre></div>
+<p>convert</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">convert xxx.jpg -resize 800 xxx.out.jpg # 800x&lt;height&gt;
+</code></pre></div>
+<h2 id="toc_1">文件</h2>
+
+<p>stat</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">stat &lt;filename&gt; # 显示文件详细信息
+</code></pre></div>
+<p>file</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">file &lt;filename&gt; # 显示文件类型信息
+</code></pre></div>
+<p>nl</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">nl &lt;filename&gt; # 添加行号。输出到stdout
+</code></pre></div>
+<p>ln</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ln -s &lt;target&gt; &lt;linkname&gt; # 记忆：新的东西总要最后才发布。
+</code></pre></div>
+<p>ls</p>
+
+<ul>
+<li><code>-r</code> 倒序</li>
+<li><code>-s</code> 文件大小排序</li>
+<li><code>-X</code> 扩展名排序</li>
+<li><code>-t</code> 修改时间排序</li>
+</ul>
+
+<p>tree</p>
+
+<ul>
+<li><code>-d</code> 只显示目录</li>
+<li><code>-f</code> 显示路径</li>
+<li><code>-F</code> 条目后有 [*/=@|]</li>
+<li><code>-r</code> 倒序</li>
+<li><code>-t</code> 修改时间排序</li>
+<li><code>-L(\d)</code> 显示n层</li>
+</ul>
+
+<p>cat</p>
+
+<ul>
+<li><code>-n</code> 输出带编号</li>
+</ul>
+
+<p>head</p>
+
+<ul>
+<li><code>-n &lt;file&gt;</code> 显示文件前n行。默认10。</li>
+</ul>
+
+<p>tail</p>
+
+<ul>
+<li><code>-&lt;n&gt;</code> 显示后n行</li>
+<li><code>+&lt;n&gt;</code> 显示第n行到结尾</li>
+<li><code>-F</code> 跟踪显示不断增长的文件结尾</li>
+</ul>
+
+<p>cut (TODO)</p>
+
+<ul>
+<li><code>-c&lt;list&gt;</code></li>
+<li><code>-f&lt;list&gt; -d&lt;delimeter&gt;</code></li>
+</ul>
+
+<p>其中list为</p>
+
+<ul>
+<li><code>N</code> 用<code>,</code>分隔</li>
+<li><code>N-</code></li>
+<li><code>N-M</code></li>
+<li><code>-M</code></li>
+</ul>
+
+<h2 id="toc_2">用户管理</h2>
+
+<p>id</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">id # 显示用户和组的信息
+</code></pre></div>
+<h2 id="toc_3">系统管理</h2>
+
+<p>pstree</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># TODO
+</code></pre></div>
+<p>dmesg</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dmesg # 查看内核日志
+</code></pre></div>
+<p>uname</p>
+
+<ul>
+<li><code>-v</code> 内核版本 =&gt; <code>Darwin Kernel Version 13.1.0: Wed Apr ... EASE_X86_64</code></li>
+<li><code>-r</code> 内核发行信息 =&gt; <code>13.1.0</code></li>
+<li><code>-m</code> 机器硬件名称 =&gt; <code>x86_64</code></li>
+<li><code>-n</code> 网络节点。等价于<code>hostname</code> =&gt; <code>HebideMacBook-Pro.local</code></li>
+<li><code>-s</code> 操作系统名称。 =&gt; <code>Darwin</code></li>
+<li>如果不加参数，默认使用 -s。 =&gt; <code>Darwin</code></li>
+</ul>
+
+<p>du</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># -n --numeric-sort
+# -r --reverse
+du -s * | sort -nr
+</code></pre></div>
+<p>strace</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">strace ./a.out # details about system calls when a program runs
+</code></pre></div>
+<p>screen</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">screen ./a.sh
+Ctrl-a d # 断开
+screen -ls # 显示所有任务.包含 screen ID
+screen -r 4980.xxxx.localhost # 重新连接
+</code></pre></div>
+<h2 id="toc_4">网络</h2>
+
+<p>tcpdump</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tcpdump -tt -r -nn xx.pcap
+</code></pre></div>
+<p>curl</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">curl ifconfig.me
+</code></pre></div>
+<p>scp</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">scp &lt;local&gt; [ -p port ] root@hostname:&lt;path&gt;
+scp [-p port ] root@hostname:&lt;path&gt; &lt;local&gt;
+</code></pre></div>
+<h2 id="toc_5">操作</h2>
+
+<ul>
+<li>命令前加一个空格，不会出现在history中</li>
+<li><code>Alt-.</code> 或 <code>Esc-.</code> 以倒序方式传递所输入的命令参数。</li>
+<li><code>!!</code> 上一次命令</li>
+<li><code>Ctrl-s</code> 停止显示</li>
+<li><code>Ctrl-q</code> 恢复显示</li>
+<li><code>Shift-pageup/down</code> pageup down</li>
+<li><code>shift-Insert</code> 粘贴。鼠标中键。</li>
+</ul>
+
+<h2 id="toc_6">coding</h2>
+
+<p>ldd</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ldd a.out # 打印程序需要的shared lib
+</code></pre></div>
+<p>ctags</p>
+
+<ul>
+<li><code>-c++-kinds=+p</code> 生成函数原型</li>
+<li><code>-fields=+iaS</code> 类的继承(inheritiance)、累成员的访问权限(access)、routine签名(Signature)</li>
+<li><code>-extra=+q</code> 为类成员生成的tag加上其所属的类信息</li>
+</ul>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ctags -R --c++kinds=+p --fields=+iaS --extra=+q
+</code></pre></div>
+<h2 id="toc_7">熟练的备份</h2>
+
+<ul>
+<li><code>Ctrl-l</code> 清屏</li>
+<li><code>mkdir -p</code> 同时建立父目录</li>
+</ul>
+
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

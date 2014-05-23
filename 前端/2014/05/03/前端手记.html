@@ -1,0 +1,414 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> 前端手记 </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>前端手记</h1>
+<span class="meta">03 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+  <a class="btn btn-success" href="/tags.html?html"> html </a>
+  
+  <a class="btn btn-success" href="/tags.html?css"> css </a>
+  
+  <a class="btn btn-success" href="/tags.html?javascript"> javascript </a>
+  
+  <a class="btn btn-success" href="/tags.html?前端"> 前端 </a>
+  
+  <a class="btn btn-success" href="/tags.html?web"> web </a>
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h2 id="toc_0">HTML</h2>
+
+<p>link不用结束符号</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;link href=“xxx” rel=“stylesheet”&gt;
+&lt;script src=“xxx”&gt;&lt;/script&gt;
+</code></pre></div>
+<p>链接在新窗口中打开</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">`target=&#39;_blank&#39;`
+</code></pre></div>
+<p>用户可以选择多个文件</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;input type=&quot;file&quot; id=&quot;file-select&quot; name=&quot;photos[]&quot; multiple/&gt;
+</code></pre></div>
+<!--more-->
+
+<h2 id="toc_1">获取页面高宽</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$(window).height()
+$(window).width()
+
+$(document).width()
+$(document).height()
+
+screen.height
+screen.width
+</code></pre></div>
+<h2 id="toc_2">获取当前页面网址</h2>
+
+<p>document.URL</p>
+
+<h2 id="toc_3">CSS</h2>
+
+<h4 id="toc_4">Selector</h4>
+
+<p>nth-child</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">element:nth-child(an + b) /* n start from 0, but 元素 from 1. 即第一个元素id是1 */
+</code></pre></div>
+<p>examples:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">tr:nth-child(2n+1)
+tr:nth-child(odd)
+tr:nth-child(even)
+span:nth-child(1) /* span的父节点的第一个孩子 */
+span:nth-child(-n+3) /* 前三个 */
+</code></pre></div>
+<h4 id="toc_5">Basic</h4>
+
+<p>margin可以是负的
+padding不可以</p>
+
+<h4 id="toc_6">box-shadow</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">box-shadow: &lt;offset-x&gt; &lt;offset-y&gt; &lt;blur-radius&gt;? &lt;spread-radius&gt;? &lt;color&gt;?
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">-moz-
+-webkit-
+box-shadow:
+</code></pre></div>
+<p>examples:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">box-shadow: 5px 5px 7px rgba(33,33,33,.7);
+</code></pre></div>
+<h4 id="toc_7">transform</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">transform: none
+transform: matrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
+transform: translate(12px, 50%)
+transform: translateX(2em)
+transform: translateY(3in)
+transform: scale(2, 0.5)
+transform: scaleX(2)
+transform: scaleY(0.5)
+transform: rotate(0.5turn)
+transform: skewX(30deg)
+transform: skewY(1.07rad)
+transform: matrix3d(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0)
+transform: translate3d(12px, 50%, 3em)
+transform: translateZ(2px)
+transform: scale3d(2.5, 1.2, 0.3)
+transform: scaleZ(0.3)
+transform: rotate3d(1, 2.0, 3.0, 10deg)
+transform: rotateX(10deg)
+transform: rotateY(10deg)
+transform: rotateZ(10deg)
+transform: perspective(17px)
+
+transform: translateX(10px) rotate(10deg) translateY(5px)
+</code></pre></div>
+<h4 id="toc_8">transition</h4>
+
+<p>examples:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">transition:  all 1s;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">transition-property: background-color, color;
+transition-duration: 1s;
+transition-timing-function: ease-out;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">transition-property: font-size;
+transition-duration: 4s;
+transition-delay: 2s;
+</code></pre></div>
+<h4 id="toc_9">Colors</h4>
+
+<p><code>ff5e99</code> 一种非常骚的粉红色</p>
+
+<h4 id="toc_10">file input button</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;span class=&quot;btn btn-success fileinput-button&quot;&gt;
+&lt;i class=&quot;glyphicon glyphicon-plus&quot;&gt;&lt;/i&gt;
+&lt;span&gt;Add files...&lt;/span&gt;
+&lt;input type=&quot;file&quot; name=&quot;files[]&quot; multiple&gt;
+&lt;/span&gt;
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">.fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  -ms-filter: &#39;alpha(opacity=0)&#39;;
+  font-size: 200px;
+  direction: ltr;
+  cursor: pointer;
+}
+</code></pre></div>
+<h4 id="toc_11">CSS Div中居中：</h4>
+
+<p>horizontal:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;div style=‘text-align: center’&gt;
+     &lt;div style=‘margin: auto’&gt;
+     &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div>
+<p>a text-aligned parent can align all the text of its children.
+inline-block is treated as text; so use inline-block, don’t need margin:auto</p>
+
+<p>vertical:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;div style=‘display: table’&gt;
+     &lt;div style=‘display: inline-block; vertical-align: middle’&gt;
+     &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div>
+<h2 id="toc_12">JSFiddle</h2>
+
+<h4 id="toc_13">常见错误</h4>
+
+<ul>
+<li>加载必要的库文件</li>
+<li>如果要加载不止一个，使用外部文件选项，然后传入cdn</li>
+</ul>
+
+<h2 id="toc_14">jQuery</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$.ajax(url, {
+  type: &#39;POST&#39; // 注意不是method
+  })
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

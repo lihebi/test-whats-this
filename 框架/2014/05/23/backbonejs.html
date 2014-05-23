@@ -1,0 +1,455 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> BackboneJS </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>BackboneJS</h1>
+<span class="meta">23 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <blockquote>
+<p>“Get your truth out of the DOM”</p>
+
+<p>Jeremy Ashkenas</p>
+</blockquote>
+
+<h1 id="toc_0">Model</h1>
+
+<h2 id="toc_1">基本用法</h2>
+
+<ul>
+<li>继承自空的对象</li>
+<li>用JSON数据初始化一个实体</li>
+</ul>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoItem</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({});</span>
+<span class="kd">var</span> <span class="nx">todoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoItem</span><span class="p">(</span>
+  <span class="p">{</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Pick up milk&#39;</span><span class="p">,</span> <span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;incomplete&#39;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>得到模型的属性值</li>
+<li>设置属性</li>
+<li>保存到服务器(需要设置)</li>
+</ul>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="nx">todoItem</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">);</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;complete&#39;</span><span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</code></pre></div>
+<!--more-->
+
+<p>可以指定默认值</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoItem</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Empty todo...&#39;</span><span class="p">,</span>
+    <span class="nx">status</span><span class="o">:</span> <span class="s1">&#39;incomplete&#39;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="err">￼￼￼￼￼￼￼</span><span class="kd">var</span> <span class="nx">todoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoItem</span><span class="p">();</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="toc_2">与服务端同步</h2>
+
+<ul>
+<li>设置url</li>
+<li>拉回数据并填充</li>
+</ul>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">todoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoItem</span><span class="p">();</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;/todo&#39;</span><span class="p">;</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+<span class="c1">// =&gt; { id: 1, description: &#39;Pick up milk&#39;, status: &#39;incomplete&#39; }</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>更好的方式: RESTful API</p>
+
+<p>使用urlRoot创建一个新的Model</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoItem</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="nx">urlRoot</span><span class="o">:</span> <span class="s1">&#39;/todos&#39;</span><span class="p">});</span>
+</code></pre></div>
+<ul>
+<li>使用<code>id</code>初始化一个实体,fetch时就会往<code>/todos/:id</code>上发GET</li>
+<li>save会触发<code>PUT /todos/:id</code>+参数</li>
+</ul>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">todoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoItem</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span> <span class="c1">// =&gt; GET /todos/1</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Pick up cookies.&#39;</span><span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">save</span><span class="p">()</span> <span class="c1">// PUT /todos/1 with params</span>
+</code></pre></div>
+<ul>
+<li>初始化实体时没有指定<code>id</code>,则在<code>save</code>的时候会自动加上.</li>
+<li>没有<code>fetch</code>的情况下直接<code>save</code>会触发<code>POST</code>请求</li>
+</ul>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">todoItem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoItem</span><span class="p">();</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Fill prescription.&#39;</span><span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span> <span class="c1">// =&gt; POST /todos with params</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">);</span> <span class="c1">// =&gt; 2. update id automaticly</span>
+</code></pre></div>
+<p>其他模型上的函数</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="nx">todoItem</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span> <span class="c1">// =&gt; DELETE /todos/2</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span> <span class="c1">// get JSON from model</span>
+<span class="c1">// =&gt; { id: 2, description: &#39;Fill prescription&#39;, status: &#39;incomplete&#39; }</span>
+</code></pre></div>
+<h2 id="toc_3">事件监听</h2>
+
+<p>自定义事件</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="err">￼</span><span class="nx">todoItem</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;event-name&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;event-name happened!&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;event-name&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>内置事件</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="nx">todoItem</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="nx">doThing</span><span class="p">);</span> <span class="c1">// function doThing(){}</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Fill prescription.&#39;</span><span class="p">});</span>
+<span class="err">￼</span><span class="nx">todoItem</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Fill prescription.&#39;</span><span class="p">},</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+<span class="nx">todoItem</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="nx">doThing</span><span class="p">);</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th align="left">事件名称</th>
+<th align="left">触发条件</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">change</td>
+<td align="left">模型中的任何属性改变</td>
+</tr>
+<tr>
+<td align="left">destroy</td>
+<td align="left">模型被销毁</td>
+</tr>
+<tr>
+<td align="left">sync</td>
+<td align="left">成功同步</td>
+</tr>
+<tr>
+<td align="left">error</td>
+<td align="left">模型<code>save</code>或者验证失败</td>
+</tr>
+<tr>
+<td align="left">all</td>
+<td align="left">所有被<code>trigger</code>的事件</td>
+</tr>
+</tbody></table>
+
+<h1 id="toc_4">View</h1>
+
+<h2 id="toc_5">简单用法</h2>
+
+<p>View类和View实体</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({});</span>
+<span class="kd">var</span> <span class="nx">todoView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoView</span><span class="p">({</span> <span class="nx">model</span><span class="o">:</span> <span class="nx">todoItem</span> <span class="p">});</span>
+</code></pre></div>
+<h2 id="toc_6">html渲染</h2>
+
+<p>View类中包含render函数</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="s1">&#39;&lt;h3&gt;&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/h3&gt;&#39;</span><span class="p">;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">html</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">todoView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoView</span><span class="p">({</span> <span class="nx">model</span><span class="o">:</span> <span class="nx">todoItem</span> <span class="p">});</span>
+<span class="nx">todoView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">todoView</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+</code></pre></div>
+<p>will output:</p>
+<div class="highlight"><pre><code class="html language-html" data-lang="html"><span class="nt">&lt;div&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>Pick up milk<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div>
+<p>每一个view都有一个最高层元素,默认是div.改变:</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">SimpleView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="nx">tagName</span><span class="o">:</span> <span class="s1">&#39;li&#39;</span><span class="p">});</span>
+</code></pre></div>
+<p>还可以加上<code>id</code>和<code>class</code></p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">tagName</span><span class="o">:</span> <span class="s1">&#39;article&#39;</span><span class="p">,</span>
+  <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;todo-view&#39;</span><span class="p">,</span>
+  <span class="nx">className</span><span class="o">:</span> <span class="s1">&#39;todo&#39;</span>
+<span class="p">});</span>
+</code></pre></div>
+<p><code>todoView.el</code>是<code>DOM Element</code>,使用<code>jQuery</code>访问</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#todo-view&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">();</span>
+<span class="nx">$</span><span class="p">(</span><span class="nx">todoView</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">();</span>
+<span class="nx">todoView</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">();</span> <span class="c1">// 最好</span>
+</code></pre></div>
+<h2 id="toc_7">配合underscore使用</h2>
+
+<p>View模型</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">template</span><span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="err">‘</span><span class="o">&lt;</span><span class="nx">h3</span><span class="o">&gt;&lt;%=</span> <span class="nx">description</span> <span class="o">%&gt;&lt;</span><span class="err">/h3&gt;’),</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">attributes</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">attributes</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>使用</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="err">￼</span><span class="kd">var</span> <span class="nx">todoView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TodoView</span><span class="p">({</span> <span class="nx">model</span><span class="o">:</span> <span class="nx">todoItem</span> <span class="p">});</span>
+<span class="nx">todoView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">todoView</span><span class="p">.</span><span class="nx">el</span><span class="p">);</span>
+</code></pre></div>
+<p>输出</p>
+<div class="highlight"><pre><code class="html language-html" data-lang="html"><span class="nt">&lt;article</span> <span class="na">id=</span><span class="s">&quot;todo-view&quot;</span> <span class="na">class=</span><span class="s">&quot;todo&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>Pick up milk<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre></div>
+<h2 id="toc_8">View上的事件监听</h2>
+
+<p>语法: <code>&quot;&lt;event&gt; &lt;selector&gt;&quot;: &quot;&lt;method&gt;&quot;</code></p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">TodoView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;click h3&quot;</span><span class="o">:</span> <span class="s2">&quot;alertStatus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dblclick&quot;</span> <span class="o">:</span> <span class="s2">&quot;funcX&quot;</span> <span class="c1">// EL中的任何地方</span>
+  <span class="p">},</span>
+  <span class="nx">alertStatus</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Hey you clicked the h3!&#39;</span><span class="p">);</span>
+<span class="p">}</span> <span class="p">})</span>
+</code></pre></div>
+<p>等价于</p>
+<div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">delegate</span><span class="p">(</span><span class="s1">&#39;h3&#39;</span><span class="p">,</span> <span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">alertStatus</span><span class="p">);</span>
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

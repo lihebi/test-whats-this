@@ -1,0 +1,391 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Openvpn </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Openvpn</h1>
+<span class="meta">20 Apr 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+  <a class="btn btn-success" href="/tags.html?ubuntu"> ubuntu </a>
+  
+  <a class="btn btn-success" href="/tags.html?openvpn"> openvpn </a>
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h1 id="toc_0">服务端</h1>
+
+<p>环境：ubuntu14.04</p>
+
+<h2 id="toc_1">install packages</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">apt-get update
+apt-get upgrade
+apt-get install openvpn
+apt-get install easy-rsa
+</code></pre></div>
+<!--more-->
+
+<h2 id="toc_2">easy-rsa</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cp -r /usr/share/easy-rsa /etc/openvpn/
+cd /etc/openvpn/easy-rsa
+ln -s openssl-1.0.0.cnf openssl.conf
+# config here
+. vars
+# this will rm keys dir
+. clean-all
+. build-ca
+
+# need &#39;y&#39;
+. build-key-server server
+# need &#39;y&#39;
+. build-key client1 # one user a time
+# 2048 if 64 bit
+. build-dh
+
+# optional: revoke user
+. vars
+. revoke-full client1
+</code></pre></div>
+<h2 id="toc_3">key files</h2>
+
+<p>Client Side files: <code>ca.crt</code>, <code>client1.crt</code>, <code>client1.key</code></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd keys
+cp ca.crt ca.key dh2048.pem server.crt server.key /etc/openvpn/
+</code></pre></div>
+<h2 id="toc_4">config</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">cd /usr/share/doc/openvpn/examples/sample-config-files/
+cp server.conf.gz client.conf ~
+cd ~
+gunzip server.conf.gz
+mv server.conf /etc/openvpn
+</code></pre></div>
+<p>client.conf:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">remote example.com 1194
+ca ca.crt
+cert client1.crt
+key client1.key
+</code></pre></div>
+<p>server.conf:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">dh2048.pem # if build-dh use 64bit
+</code></pre></div>
+<h2 id="toc_5">start service</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">service openvpn start
+</code></pre></div>
+<h2 id="toc_6">forward config</h2>
+
+<p>/etc/openvpn/server.conf</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">push &quot;redirect-gateway def1 bypass-dhcp&quot;
+</code></pre></div>
+<p>/etc/sysctl.conf</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">net.ipv4.ip_forward=1
+</code></pre></div>
+<p>in shell:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</code></pre></div>
+<h2 id="toc_7">iptables</h2>
+
+<p>/etc/rc.local</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
+iptables -A FORWARD -j REJECT
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+iptables -A INPUT -i tun+ -j ACCEPT
+iptables -A FORWARD -i tun+ -j ACCEPT
+iptables -A INPUT -i tap+ -j ACCEPT
+iptables -A FORWARD -i tap+ -j ACCEPT
+
+exit 0
+</code></pre></div>
+<h2 id="toc_8">dns</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">apt-get install dnsmasq resolvconf
+</code></pre></div>
+<p>/etc/dnsmasq.conf</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">listen-address=127.0.0.1,10.8.0.1
+bind-interfaces
+</code></pre></div>
+<p>/etc/network/interfaces: # optional</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">auto eth0
+iface eth0 inet dhcp
+
+dns-search members.linode.com
+dns-nameservers 97.107.133.4 207.192.69.4 207.192.69.5
+</code></pre></div>
+<p>/etc/rc.local</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">/etc/init.d/dnsmasq start
+exit 0
+</code></pre></div>
+<p>/etc/openvpn/server.conf:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">push &quot;dhcp-option DNS 10.8.0.1&quot;
+</code></pre></div>
+<p>reboot!</p>
+
+<h1 id="toc_9">client side</h1>
+
+<h2 id="toc_10">文件</h2>
+
+<ul>
+<li>client.conf</li>
+<li>ca.crt</li>
+<li>client1.key</li>
+<li>client1.crt</li>
+</ul>
+
+<h2 id="toc_11">mac</h2>
+
+<p>tunnelblick</p>
+
+<h2 id="toc_12">windows</h2>
+
+<p>use openvpn gui, stable version, installation package
+(both 32-bit and 64-bit TAP driver included)
+openvpn-2.0.9-gui-1.0.3-install.exe</p>
+
+<ul>
+<li><code>/etc/openvpn/server.conf</code>, remove the <code>bypass-dhcp</code> in push directive</li>
+<li>in client.ovpn, add <code>route-method exe</code> in the end</li>
+</ul>
+
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

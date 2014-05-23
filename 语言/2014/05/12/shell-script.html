@@ -1,0 +1,456 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Shell Script </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Shell Script</h1>
+<span class="meta">12 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h2 id="toc_0">变量</h2>
+
+<p>&quot;&quot;中的变量$xxx会解析,&#39;&#39;不会.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">`xxx` &lt;=&gt; $(xxx)
+</code></pre></div>
+<h4 id="toc_1">变量替换</h4>
+
+<p><strong>返回结果，但不改变原变量的值。</strong></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># 若var未被声明，则以DEFAULT为其值
+${var-DEFAULT}
+${var=DEFAULT}
+# 若
+# 1. var 未被声明 或
+# 2. 其值为空
+# 则以DEFAULT为其值
+${var:-DEFAULT}
+${var:=DEFAULT}
+</code></pre></div>
+<!--more-->
+
+<h4 id="toc_2">特殊变量</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">$0 # 脚本名称
+$&lt;n&gt; # 第n个参数
+$# # 参数数量
+$* # 所有参数，作为一个字符串
+$@ # 所有参数，作为字符串数组
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text"># example
+
+./a.sh hello world
+&quot;$0&quot; =&gt; ./a.sh
+&quot;$1&quot; =&gt; hello
+&quot;$2&quot; =&gt; world
+&quot;$#&quot; =&gt; 2
+&quot;$*&quot; =&gt; &quot;./a.sh hello world&quot;
+&quot;$@&quot; =&gt; [ &quot;./a.sh&quot; &quot;hello&quot; &quot;world&quot; ]
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">$$ # 当前进程的PID
+$? # 上一个命令的返回值
+$! # 运行在后台的最后一个进程的PID。done了也算。
+$_ # 上个命令的最后一个字段
+</code></pre></div>
+<h2 id="toc_3">字符串</h2>
+
+<p>substring使用的是bash中的正则。</p>
+
+<ul>
+<li><code>${#string}</code> $string的长度</li>
+<li><code>${string:5}</code> $string 从5位置开始的子串</li>
+<li><code>${string:5:3}</code> 5位置开始，提取3个。</li>
+<li><code>${string#substring}</code> 从*开头*删除substring的*最短*匹配</li>
+<li><code>${string##substring}</code> 从*开头*删除substring的*最长*匹配</li>
+<li><code>${string%substring}</code> 从*结尾*删除substring的*最短*匹配</li>
+<li><p><code>${string%%substring}</code> 从*结尾*删除substring的*最长*匹配</p></li>
+<li><p><code>${string/substring/replace}</code> 第一个匹配的substring替换为replace</p></li>
+<li><p><code>${string/#substring/replace}</code> 开头是substring,则换为replace</p></li>
+<li><p><code>${string/%substring/replace}</code> 结尾时substring,则换为replace</p></li>
+</ul>
+
+<p>substring若不加引号,则为正常字符串,加引号则可用$转义.</p>
+
+<h2 id="toc_4">用户交互</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">read -p &quot;please input: &quot; a b c
+</code></pre></div>
+<h2 id="toc_5">条件测试</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">test &lt;exp&gt;
+[ &lt;exp&gt; ]
+[[ &lt;exp&gt; ]]
+</code></pre></div>
+<h4 id="toc_6">文件测试</h4>
+
+<ul>
+<li><code>-e &lt;file&gt;</code> 存在</li>
+<li><code>-f &lt;file&gt;</code> 普通文件?</li>
+<li><code>-d &lt;file&gt;</code> 目录?</li>
+<li><code>-L &lt;file&gt;</code> 符号链接?</li>
+<li><code>-s &lt;file&gt;</code> 非空?(size!=0)</li>
+<li><code>-r &lt;file&gt;</code> 可读?</li>
+<li><code>-w &lt;file&gt;</code> 可写?</li>
+<li><code>-x &lt;file&gt;</code> 可执行?</li>
+<li><code>&lt;file1&gt; -nt &lt;file2&gt;</code> newer than?</li>
+<li><code>&lt;file1&gt; -ot &lt;file2&gt;</code> older than?</li>
+</ul>
+
+<h4 id="toc_7">字符串测试</h4>
+
+<ul>
+<li><code>-z &lt;string&gt;</code> 空?</li>
+<li><code>-n &lt;string&gt;</code> 非空?</li>
+<li><code>string1</code> == <code>string2</code> 相等? 也可直接用=</li>
+<li><code>string1</code> != <code>string2</code></li>
+</ul>
+
+<h4 id="toc_8">整数</h4>
+
+<p>[]</p>
+
+<ul>
+<li><code>-eq</code></li>
+<li><code>-ne</code></li>
+<li><code>-gt</code></li>
+<li><code>-ge</code></li>
+<li><code>-lt</code></li>
+<li><code>-le</code></li>
+</ul>
+
+<p>(())</p>
+
+<ul>
+<li>==</li>
+<li>!=</li>
+<li>&gt;</li>
+<li>&gt;=</li>
+<li>&lt;</li>
+<li>&lt;=</li>
+</ul>
+
+<h4 id="toc_9">逻辑</h4>
+
+<p>[]</p>
+
+<ul>
+<li>-a</li>
+<li>-o</li>
+<li>!</li>
+</ul>
+
+<p>[[]]</p>
+
+<ul>
+<li>&amp;&amp;</li>
+<li>||</li>
+<li>!</li>
+</ul>
+
+<h2 id="toc_10">数值计算</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">(( a=2+3 ))
+a = $(( 2+3 ))
+
+a = ((12))
+echo $((a++)) # =&gt; 12
+echo $((++a)) # =&gt; 14
+
+echo ((5&gt;3)) # =&gt; 1
+</code></pre></div>
+<h2 id="toc_11">语法结构</h2>
+
+<h4 id="toc_12">If</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">if condition1; then
+  # ...
+elif condition2
+then
+  # ...
+else
+  # ...
+fi
+</code></pre></div>
+<p>其中condition有三种形式：</p>
+
+<p><code>[]</code>: TODO</p>
+
+<p><code>[[]]</code>: TODO</p>
+
+<p><code>(())</code>: TODO</p>
+
+<p>关于<code>;</code>:
+如果语句后面是行结束符，不需要。
+如果有<code>then</code>等在一行上，需要。</p>
+
+<h4 id="toc_13">Case</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">case $a in
+1|en) echo &#39;en&#39;;;
+2|zh) echo &#39;zh&#39;;;
+esac
+</code></pre></div>
+<h4 id="toc_14">循环</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># while
+while condition; do xxx; done
+# until
+until condition; do xxx; done
+# for
+for condition; do xxx; done
+# conditions
+for fname in *
+for fname in `/etc/*` # do not need the 2 `
+for x in aa bb cc
+for x in $@
+for x; do xx
+for (( i=1; i&lt;5; i++ ))
+</code></pre></div>
+<p>可以使用<code>break</code>, <code>continue</code>.</p>
+
+<h4 id="toc_15">函数</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># 形式1
+function func {
+  return 1;
+  exit 1;
+}
+# 形式2
+func() {
+  return 1;
+}
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+

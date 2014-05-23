@@ -1,0 +1,377 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title> Yeoman & Grunt & Bower </title>
+  <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/bower_components/google-code-prettify/src/prettify.css" rel="stylesheet"> -->
+
+  <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://cdn.bootcss.com/prettify/r298/prettify.min.css" rel="stylesheet">
+
+  <!-- <link href="/bower_components/google-code-prettify/styles/desert.css" rel="stylesheet"> -->
+
+<!--   <link href="/css/reset.css" rel="stylesheet"> -->
+<!--   <link href="/css/solarizedlight.css" rel="stylesheet"> -->
+<!--   <link href="/css/slidebars.css" rel="stylesheet"> -->
+  <link href="/css/hebi.css" rel="stylesheet">
+
+  <!-- // <script src="/bower_components/jquery/dist/jquery.js"></script> -->
+  <script src="http://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="canvas">
+  <div id="menu-btn"><a href class="glyphicon glyphicon-align-justify"></a></div>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid container-narrow">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Hebi!</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li  id="slidebar-toggle"><a href="#"> Menu </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class='container-narrow' id="main">
+    <h1>Yeoman & Grunt & Bower</h1>
+<span class="meta">09 May 2014</span>
+
+<div id="tags" class="pull-right" style="display: inline-block">
+  
+</div>
+
+<hr>
+
+<div class="post">
+  <h2 id="toc_0">Grunt</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">grunt --help # list all available tasks
+</code></pre></div>
+<h4 id="toc_1">Workflow</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Preview an app you have generated (with Livereload).
+grunt serve
+
+# Run the unit tests for an app.
+grunt test
+
+# Build an optimized, production-ready version of your app.
+grunt
+</code></pre></div>
+<!--more-->
+
+<h4 id="toc_2">grunt wildcard</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">* # matches any number of characters, but not /
+? # matches a single character, but not /
+** # matches any number of characters, including /, as long as it&#39;s the only thing in a path part
+{} # allows for a comma-separated list of &quot;or&quot; expressions
+! # at the beginning of a pattern will negate the match
+</code></pre></div>
+<p>Examples:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">// You can specify single files:
+{src: &#39;foo/this.js&#39;, dest: ...}
+// Or arrays of filges:
+{src: [&#39;foo/this.js&#39;, &#39;foo/that.js&#39;, &#39;foo/the-other.js&#39;], dest: ...}
+// Or you can generalize with a glob pattern:
+{src: &#39;foo/th*.js&#39;, dest: ...}
+
+// This single node-glob pattern:
+{src: &#39;foo/{a,b}*.js&#39;, dest: ...}
+// Could also be written like this:
+{src: [&#39;foo/a*.js&#39;, &#39;foo/b*.js&#39;], dest: ...}
+
+// All .js files, in foo/, in alpha order:
+{src: [&#39;foo/*.js&#39;], dest: ...}
+// Here, bar.js is first, followed by the remaining files, in alpha order:
+{src: [&#39;foo/bar.js&#39;, &#39;foo/*.js&#39;], dest: ...}
+
+// All files except for bar.js, in alpha order:
+{src: [&#39;foo/*.js&#39;, &#39;!foo/bar.js&#39;], dest: ...}
+// All files in alpha order, but with bar.js at the end.
+{src: [&#39;foo/*.js&#39;, &#39;!foo/bar.js&#39;, &#39;foo/bar.js&#39;], dest: ...}
+
+// Templates may be used in filepaths or glob patterns:
+{src: [&#39;src/&lt;%= basename %&gt;.js&#39;], dest: &#39;build/&lt;%= basename %&gt;.min.js&#39;}
+// But they may also reference file lists defined elsewhere in the config:
+{src: [&#39;foo/*.js&#39;, &#39;&lt;%= jshint.all.src %&gt;&#39;], dest: ...}
+</code></pre></div><div class="highlight"><pre><code class="text language-text" data-lang="text">exports.warnOn = &#39;Gruntfile.js&#39;;        // Warn on a Gruntfile.js file.
+exports.warnOn = &#39;*.js&#39;;            // Warn on any .js file.
+exports.warnOn = &#39;*&#39;;               // Warn on any non-dotfile or non-dotdir.
+exports.warnOn = &#39;.*&#39;;              // Warn on any dotfile or dotdir.
+exports.warnOn = &#39;{.*,*}&#39;;          // Warn on any file or dir (dot or non-dot).
+exports.warnOn = &#39;!*/**&#39;;           // Warn on any file (ignoring dirs).
+exports.warnOn = &#39;*.{png,gif,jpg}&#39;; // Warn on any image file.
+
+// This is another way of writing the last example.
+exports.warnOn = [&#39;*.png&#39;, &#39;*.gif&#39;, &#39;*.jpg&#39;];
+</code></pre></div>
+<h2 id="toc_3">杂</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Not only will this install &lt;module&gt; locally,
+# but it will automatically be added to the devDependencies section, using a tilde version range.
+npm install &lt;module&gt; --save-dev.
+# 会同时把它加入bower.json
+bower install bootstrap --save
+</code></pre></div>
+<h2 id="toc_4">Bower</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">npm install -g bower
+
+bower help
+bower search xxx
+bower install xxx
+bower install xxx#version
+
+bower install # in bower.json
+
+bower uninstall xxx
+
+bower init # create bower.json
+
+bower list
+bower update xxx
+bower info bootstrap
+bower uninstall jquery
+</code></pre></div>
+<h2 id="toc_5">Yeoman</h2>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">npm install -g yo
+npm install -g generator-webapp
+cd myapp
+yo webapp
+
+
+for angularjs app:
+npm install -g generator-angular
+yo angular
+</code></pre></div>
+<h4 id="toc_6">Workflow</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">yo webapp
+grunt serve
+grunt test
+grunt
+</code></pre></div>
+<h4 id="toc_7">Use bower with yeoman</h4>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"># Scaffold a new application.
+yo webapp
+
+# Search Bower&#39;s registry for the plug-in we want.
+bower search jquery-pjax
+
+# Install it and save it to bower.json
+bower install jquery-pjax --save
+
+# If you&#39;re using RequireJS...
+# (be aware that currently the webapp generator does not include RequireJS and the following command only applies to generators that do)
+grunt bower
+&gt; Injects your Bower dependencies into your RequireJS configuration.
+
+# If you&#39;re not using RequireJS...
+grunt bowerInstall
+&gt; Injects your dependencies into your index.html file.
+</code></pre></div>
+</div>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hebiblog';
+(function(){
+  var s = document.createElement('script');s.async = true;
+  s.type = 'text/javascript';
+  s.src = '//'+disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
+})();
+</script>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "hebiblog";
+(function() {
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//'+disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+  </div>
+
+  <div id="copyright" class="container-narrow text-center">
+    <p>&copy; 2014  All Right Reserved.</p>
+  </div>
+</div>
+
+
+<div id="sidebar">
+  <ul>
+    <li><label>Navigate</label></li>
+    <li><a href='/'>Home</a></li>
+    <li><a href='/title.html'>Titles Only</a></li>
+  </ul>
+  <ul>
+    <li><label>Categories</label></li>
+    
+    
+    <li>
+      <a id="随笔-nav" href="/categories.html?随笔">随笔 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="系统-nav" href="/categories.html?系统">系统 (7)</a>
+    </li>
+    
+    
+    <li>
+      <a id="语言-nav" href="/categories.html?语言">语言 (9)</a>
+    </li>
+    
+    
+    <li>
+      <a id="框架-nav" href="/categories.html?框架">框架 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="后端-nav" href="/categories.html?后端">后端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="前端-nav" href="/categories.html?前端">前端 (1)</a>
+    </li>
+    
+    
+    <li>
+      <a id="未分类-nav" href="/categories.html?未分类">未分类 (3)</a>
+    </li>
+    
+    
+    <li>
+      <a id="云-nav" href="/categories.html?云">云 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="软件-nav" href="/categories.html?软件">软件 (2)</a>
+    </li>
+    
+    
+    <li>
+      <a id="库-nav" href="/categories.html?库">库 (5)</a>
+    </li>
+    
+    
+    <li>
+      <a id="文档-nav" href="/categories.html?文档">文档 (1)</a>
+    </li>
+    
+  </ul>
+  <!-- <ul>
+  <li><label>Tags</label></li>
+  
+  
+
+  
+  <li>
+  <a id="css-nav" href="/tags.html?css">css (1)</a>
+</li>
+
+  <li>
+  <a id="error-nav" href="/tags.html?error">error (1)</a>
+</li>
+
+  <li>
+  <a id="html-nav" href="/tags.html?html">html (1)</a>
+</li>
+
+  <li>
+  <a id="javascript-nav" href="/tags.html?javascript">javascript (2)</a>
+</li>
+
+  <li>
+  <a id="jekyll-nav" href="/tags.html?jekyll">jekyll (1)</a>
+</li>
+
+  <li>
+  <a id="mac-nav" href="/tags.html?mac">mac (1)</a>
+</li>
+
+  <li>
+  <a id="markdown-nav" href="/tags.html?markdown">markdown (1)</a>
+</li>
+
+  <li>
+  <a id="openvpn-nav" href="/tags.html?openvpn">openvpn (1)</a>
+</li>
+
+  <li>
+  <a id="python-nav" href="/tags.html?python">python (1)</a>
+</li>
+
+  <li>
+  <a id="ubuntu-nav" href="/tags.html?ubuntu">ubuntu (2)</a>
+</li>
+
+  <li>
+  <a id="web-nav" href="/tags.html?web">web (1)</a>
+</li>
+
+  <li>
+  <a id="前端-nav" href="/tags.html?前端">前端 (1)</a>
+</li>
+
+  <li>
+  <a id="博客-nav" href="/tags.html?博客">博客 (1)</a>
+</li>
+
+  <li>
+  <a id="时间-nav" href="/tags.html?时间">时间 (1)</a>
+</li>
+
+  <li>
+  <a id="正则表达式-nav" href="/tags.html?正则表达式">正则表达式 (1)</a>
+</li>
+
+  <li>
+  <a id="编程语言-nav" href="/tags.html?编程语言">编程语言 (3)</a>
+</li>
+
+</ul> -->
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-50872903-1', 'lihebi.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/bower_components/google-code-prettify/src/prettify.js"></script>
+<script src="/bower_components/keymaster/keymaster.js"></script> -->
+
+<script src="http://cdn.bootcss.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.bootcss.com/prettify/r298/run_prettify.min.js"></script> -->
+<script src="http://cdn.bootcss.com/prettify/r298/prettify.min.js"></script>
+<script src="http://cdn.bootcss.com/keymaster/1.6.1/keymaster.min.js"></script>
+<!-- <script src="/js/slidebars.js"></script> -->
+<script src="/js/hebi.js"></script>
+
+</body>
+</html>
+
